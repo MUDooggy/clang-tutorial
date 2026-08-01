@@ -3,21 +3,21 @@ name: Build PDF
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:   # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build-pdf:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Pandoc and LaTeX
         run: |
           sudo apt-get update
           sudo apt-get install -y pandoc texlive-xetex texlive-lang-chinese
 
-      - name: Generate PDF
+      - name: Generate PDF (with verbose)
         run: |
           pandoc docs/intro.md \
                  docs/syntax.md \
@@ -44,10 +44,11 @@ jobs:
                  docs/lib/*.md \
                  -o C语言入门教程.pdf \
                  --pdf-engine=xelatex \
-                 -V mainfont="Noto Sans CJK SC"
+                 -V mainfont="WenQuanYi Micro Hei" \
+                 --verbose
 
-      - name: Upload PDF as artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v5
         with:
           name: C语言入门教程
           path: C语言入门教程.pdf

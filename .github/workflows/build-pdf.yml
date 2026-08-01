@@ -1,0 +1,53 @@
+name: Build PDF
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:   # 允许手动触发
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Pandoc and LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-lang-chinese
+
+      - name: Generate PDF
+        run: |
+          pandoc docs/intro.md \
+                 docs/syntax.md \
+                 docs/variable.md \
+                 docs/operator.md \
+                 docs/flow-control.md \
+                 docs/types.md \
+                 docs/pointer.md \
+                 docs/function.md \
+                 docs/array.md \
+                 docs/string.md \
+                 docs/memory.md \
+                 docs/struct.md \
+                 docs/typedef.md \
+                 docs/union.md \
+                 docs/enum.md \
+                 docs/preprocessor.md \
+                 docs/io.md \
+                 docs/file.md \
+                 docs/specifier.md \
+                 docs/multifile.md \
+                 docs/cli.md \
+                 docs/multibyte.md \
+                 docs/lib/*.md \
+                 -o C语言入门教程.pdf \
+                 --pdf-engine=xelatex \
+                 -V mainfont="Noto Sans CJK SC"
+
+      - name: Upload PDF as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: C语言入门教程
+          path: C语言入门教程.pdf

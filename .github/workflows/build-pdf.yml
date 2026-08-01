@@ -12,12 +12,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Install Pandoc and LaTeX
+      - name: Install Pandoc, LaTeX, and Chinese fonts
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex texlive-lang-chinese
+          sudo apt-get install -y pandoc texlive-xetex texlive-lang-chinese fonts-noto-cjk
 
-      - name: Generate PDF (with verbose)
+      - name: List available Chinese fonts (for debugging)
+        run: fc-list :lang=zh
+
+      - name: Generate PDF
         run: |
           pandoc docs/intro.md \
                  docs/syntax.md \
@@ -44,7 +47,7 @@ jobs:
                  docs/lib/*.md \
                  -o C语言入门教程.pdf \
                  --pdf-engine=xelatex \
-                 -V mainfont="WenQuanYi Micro Hei" \
+                 -V mainfont="Noto Sans CJK SC" \
                  --verbose
 
       - name: Upload PDF artifact
